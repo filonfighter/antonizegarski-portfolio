@@ -3,35 +3,658 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Antoni Zegarski - Space Engineering & Robotics</title>
-    <meta name="description" content="Portfolio i oferta współpracy - Antoni Zegarski">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
+    <title>Portfolio - Space Engineering & Robotics</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-    <header>
-        <nav>
-            <div class="logo">Antoni Zegarski</div>
-            <ul>
-                <li><a href="#about">O mnie</a></li>
-                <li><a href="#portfolio">Projekty</a></li>
-                <li><a href="#contact">Współpraca</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <section class="hero">
-            <h1>Cześć, jestem Antoni</h1>
-            <p>Robotics & Automation Student | Future Space Engineer</p>
-            <button>Zobacz moje projekty</button>
-        </section>
-    </main>
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <script>
-        // Tu trafi prosty JS jeśli będzie potrzebny
-        console.log("Strona załadowana");
+        tailwind.config = {
+            theme: {
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif'],
+                },
+                extend: {
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050508;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050508; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+
+        .tab-content {
+            transition: all 0.7s cubic-bezier(0, 0, 0.2, 1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .tab-hidden {
+            opacity: 0;
+            transform: translateY(2rem);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .tab-visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            z-index: 20;
+            position: relative;
+        }
+    </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-black min-h-screen flex flex-col relative">
+
+    <!-- --- BACKGROUND (Space Photo Placeholder) --- -->
+    <div class="fixed inset-0 z-0 pointer-events-none bg-black">
+        <!-- Lokalne tło z pliku tło.jpg w katalogu projektu -->
+        <img src="assets/tło.jpg" 
+             alt="Space Background" 
+             class="absolute inset-0 w-full h-full object-cover opacity-70" />
+        
+        <!-- Gradient overlay to fade bottom into black -->
+        <div class="absolute inset-0 bg-gradient-to-t from-[#050508] via-[#050508]/30 to-transparent"></div>
+    </div>
+
+    <!-- --- MAIN CONTENT CONTAINER --- -->
+    <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow flex flex-col">
+        
+        <!-- HEADER -->
+        <header class="flex flex-col sm:flex-row justify-between items-center mb-12 backdrop-blur-sm bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl">
+            <div class="flex items-center space-x-4 mb-4 sm:mb-0">
+                <div class="bg-gradient-to-br from-cyan-400 to-purple-600 p-3 rounded-xl shadow-lg shadow-cyan-500/20">
+                    <i data-lucide="rocket" class="w-8 h-8 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight">ANTONI ZEGARSKI</h1>
+                    <p id="role-text" class="text-xs uppercase tracking-widest text-cyan-400 font-semibold">Inżynieria Kosmiczna & popularyzacja kosmosu</p>
+                </div>
+            </div>
+
+            <!-- Language Switcher -->
+            <button id="lang-btn" onclick="toggleLanguage()" class="group flex items-center space-x-2 bg-black/40 hover:bg-white/10 px-4 py-2 rounded-full border border-white/5 transition-all duration-300 hover:border-cyan-500/50 cursor-pointer">
+                <i data-lucide="globe" class="w-4 h-4 text-gray-400 group-hover:text-cyan-400 transition-colors"></i>
+                <span id="lang-label" class="text-sm font-medium text-gray-300 group-hover:text-white">EN</span>
+            </button>
+        </header>
+
+        <!-- NAVIGATION TABS -->
+        <nav class="flex justify-center mb-12">
+            <div class="bg-white/5 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 inline-flex shadow-xl">
+                <button
+                    onclick="switchTab('collab')"
+                    id="tab-collab"
+                    class="px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25 scale-105"
+                >
+                    <i data-lucide="circuit-board" class="w-4 h-4"></i>
+                    <span id="nav-collab">Współpraca</span>
+                </button>
+                <button
+                    onclick="switchTab('about')"
+                    id="tab-about"
+                    class="px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center space-x-2 text-gray-400 hover:text-white hover:bg-white/5"
+                >
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                    <span id="nav-about">O mnie</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- CONTENT AREA WRAPPER -->
+        <main class="flex-grow relative perspective-1000 min-h-[600px]">
+          
+            <!-- Collaboration Section (NEW VERSION) -->
+            <div id="content-collab" class="tab-content tab-visible">
+                <div class="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-12 shadow-2xl relative overflow-hidden">
+                    <!-- Decorative gradient overlay -->
+                    <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-cyan-500/5 to-transparent pointer-events-none"></div>
+
+                    <div class="relative z-10 space-y-16">
+                        
+                        <!-- 1. Large Text Box (Intro) -->
+                        <div class="text-center max-w-4xl mx-auto">
+                            <h2 id="collab-title" class="text-4xl sm:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-white">
+                                Współpraca
+                            </h2>
+                            <div class="bg-white/5 border border-white/10 p-8 rounded-2xl backdrop-blur-md hover:bg-white/10 transition-colors duration-500 group">
+                                <p id="collab-main-text" class="text-gray-300 text-lg leading-relaxed group-hover:text-white transition-colors">
+                                    "Jestem otwarty na innowacyjne projekty inżynieryjne oraz inicjatywy edukacyjne. Posiadam zaplecze techniczne (drukarki 3D, elektronika) oraz doświadczenie w prowadzeniu warsztatów i prelekcji. Szukam partnerów biznesowych i naukowych do realizacji śmiałych wizji."
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 2. Photos at Work (3 photos) -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Photo 1: Engineering/Soldering -->
+                            <div class="relative h-64 rounded-xl overflow-hidden group border border-white/10">
+                                <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800&auto=format&fit=crop" 
+                                     alt="Work 1" 
+                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:brightness-110">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                    <span id="work-photo-1-label" class="text-cyan-400 text-sm font-mono uppercase tracking-wider">Inżynieria</span>
+                                </div>
+                            </div>
+                            <!-- Photo 2: Telescope/Space -->
+                            <div class="relative h-64 rounded-xl overflow-hidden group border border-white/10">
+                                <img src="https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?q=80&w=800&auto=format&fit=crop" 
+                                     alt="Work 2" 
+                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:brightness-110">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                    <span id="work-photo-2-label" class="text-purple-400 text-sm font-mono uppercase tracking-wider">Obserwacje</span>
+                                </div>
+                            </div>
+                            <!-- Photo 3: Design/Computer -->
+                            <div class="relative h-64 rounded-xl overflow-hidden group border border-white/10">
+                                <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=800&auto=format&fit=crop" 
+                                     alt="Work 3" 
+                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:brightness-110">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                    <span id="work-photo-3-label" class="text-blue-400 text-sm font-mono uppercase tracking-wider">Projektowanie CAD</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Social Proof -->
+                        <div class="relative p-1 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-transparent to-purple-500/20">
+                            <div class="bg-black/60 backdrop-blur-sm p-8 rounded-xl border border-white/10 text-center relative">
+                                <div class="flex justify-center mb-4 space-x-1 text-yellow-400">
+                                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400"></i>
+                                </div>
+                                <blockquote id="social-proof-text" class="text-xl md:text-2xl text-white font-medium italic mb-6">
+                                    "Profesjonalizm i pasja Antoniego sprawiły, że nasze wydarzenie astronomiczne przyciągnęło tłumy. Niesamowita wiedza przekazana w przystępny sposób."
+                                </blockquote>
+                                <div class="flex items-center justify-center space-x-3">
+                                    <div class="h-px w-8 bg-gray-600"></div>
+                                    <div class="text-sm">
+                                        <span id="social-proof-source-name" class="block text-white font-bold tracking-wide">TechSpace Events</span>
+                                        <span id="social-proof-source-role" class="block text-gray-400">~ Jan Kowalski, CEO</span>
+                                    </div>
+                                    <div class="h-px w-8 bg-gray-600"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Photos from Event (3 photos) -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Event 1 -->
+                            <div class="relative h-48 rounded-xl overflow-hidden group border border-white/10 opacity-80 hover:opacity-100 transition-opacity">
+                                <img src="https://images.unsplash.com/photo-1544531586-fde5298cdd40?q=80&w=800&auto=format&fit=crop" 
+                                     alt="Event 1" 
+                                     class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                            </div>
+                            <!-- Event 2 -->
+                            <div class="relative h-48 rounded-xl overflow-hidden group border border-white/10 opacity-80 hover:opacity-100 transition-opacity">
+                                <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?q=80&w=800&auto=format&fit=crop" 
+                                     alt="Event 2" 
+                                     class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                            </div>
+                            <!-- Event 3 -->
+                            <div class="relative h-48 rounded-xl overflow-hidden group border border-white/10 opacity-80 hover:opacity-100 transition-opacity">
+                                <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=800&auto=format&fit=crop" 
+                                     alt="Event 3" 
+                                     class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                            </div>
+                        </div>
+
+                        <!-- 5. Offer Blocks (5 blocks) -->
+                        <div>
+                            <h3 id="offer-title" class="text-2xl font-bold mb-8 text-center text-white">Moja Oferta</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                
+                                <!-- Block 1: Warsztaty -->
+                                <div class="group bg-gradient-to-b from-white/10 to-white/5 p-1 rounded-2xl hover:scale-105 transition-all duration-300 cursor-default">
+                                    <div class="bg-[#0a0a12] h-full rounded-xl p-6 flex flex-col items-center text-center group-hover:bg-[#121220] transition-colors">
+                                        <div class="w-14 h-14 bg-purple-900/30 rounded-full flex items-center justify-center mb-4 text-purple-400 group-hover:text-purple-300 group-hover:scale-110 transition-transform">
+                                            <i data-lucide="bot" class="w-7 h-7"></i>
+                                        </div>
+                                        <h4 id="offer-1-title" class="text-lg font-bold text-white mb-2">Warsztaty Robotyczne</h4>
+                                        <p id="offer-1-desc" class="text-gray-400 text-sm">Zajęcia praktyczne z budowy robotów i podstaw elektroniki dla szkół i firm.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Block 2: Prelekcje -->
+                                <div class="group bg-gradient-to-b from-white/10 to-white/5 p-1 rounded-2xl hover:scale-105 transition-all duration-300 cursor-default">
+                                    <div class="bg-[#0a0a12] h-full rounded-xl p-6 flex flex-col items-center text-center group-hover:bg-[#121220] transition-colors">
+                                        <div class="w-14 h-14 bg-cyan-900/30 rounded-full flex items-center justify-center mb-4 text-cyan-400 group-hover:text-cyan-300 group-hover:scale-110 transition-transform">
+                                            <i data-lucide="mic-2" class="w-7 h-7"></i>
+                                        </div>
+                                        <h4 id="offer-2-title" class="text-lg font-bold text-white mb-2">Prelekcje Astronomiczne</h4>
+                                        <p id="offer-2-desc" class="text-gray-400 text-sm">Fascynujące opowieści o kosmosie, misjach kosmicznych i fizyce.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Block 3: Pokazy Nieba -->
+                                <div class="group bg-gradient-to-b from-white/10 to-white/5 p-1 rounded-2xl hover:scale-105 transition-all duration-300 cursor-default">
+                                    <div class="bg-[#0a0a12] h-full rounded-xl p-6 flex flex-col items-center text-center group-hover:bg-[#121220] transition-colors">
+                                        <div class="w-14 h-14 bg-blue-900/30 rounded-full flex items-center justify-center mb-4 text-blue-400 group-hover:text-blue-300 group-hover:scale-110 transition-transform">
+                                            <i data-lucide="telescope" class="w-7 h-7"></i>
+                                        </div>
+                                        <h4 id="offer-3-title" class="text-lg font-bold text-white mb-2">Pokazy Nieba</h4>
+                                        <p id="offer-3-desc" class="text-gray-400 text-sm">Profesjonalne obserwacje teleskopowe Słońca, Księżyca i planet.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Block 4: Video/Tech -->
+                                <div class="group bg-gradient-to-b from-white/10 to-white/5 p-1 rounded-2xl hover:scale-105 transition-all duration-300 cursor-default lg:col-start-1 lg:ml-auto">
+                                    <div class="bg-[#0a0a12] h-full rounded-xl p-6 flex flex-col items-center text-center group-hover:bg-[#121220] transition-colors w-full">
+                                        <div class="w-14 h-14 bg-pink-900/30 rounded-full flex items-center justify-center mb-4 text-pink-400 group-hover:text-pink-300 group-hover:scale-110 transition-transform">
+                                            <i data-lucide="video" class="w-7 h-7"></i>
+                                        </div>
+                                        <h4 id="offer-4-title" class="text-lg font-bold text-white mb-2">Produkcja Video</h4>
+                                        <p id="offer-4-desc" class="text-gray-400 text-sm">Realizacja materiałów filmowych i techniczne wsparcie planów zdjęciowych.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Block 5: Eventy -->
+                                <div class="group bg-gradient-to-b from-white/10 to-white/5 p-1 rounded-2xl hover:scale-105 transition-all duration-300 cursor-default lg:col-start-2 lg:mr-auto">
+                                    <div class="bg-[#0a0a12] h-full rounded-xl p-6 flex flex-col items-center text-center group-hover:bg-[#121220] transition-colors w-full">
+                                        <div class="w-14 h-14 bg-yellow-900/30 rounded-full flex items-center justify-center mb-4 text-yellow-400 group-hover:text-yellow-300 group-hover:scale-110 transition-transform">
+                                            <i data-lucide="users" class="w-7 h-7"></i>
+                                        </div>
+                                        <h4 id="offer-5-title" class="text-lg font-bold text-white mb-2">Szkolenia i Eventy</h4>
+                                        <p id="offer-5-desc" class="text-gray-400 text-sm">Organizacja stref naukowych na eventach firmowych i obozach.</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Contact Strip -->
+                        <div class="mt-12 p-6 bg-white/5 border border-white/5 rounded-2xl flex flex-col sm:flex-row items-center justify-between hover:bg-white/10 transition-colors">
+                            <div class="flex items-center space-x-4 mb-4 sm:mb-0">
+                                <div class="bg-gray-800 p-3 rounded-full">
+                                    <i data-lucide="mail" class="w-5 h-5 text-gray-300"></i>
+                                </div>
+                                <span id="contact-email" class="text-gray-300 font-mono">kontakt@antonizegarski.com</span>
+                            </div>
+                            <button class="px-6 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors shadow-lg hover:shadow-white/20">
+                                <span id="contact-strip-cta">Napisz do mnie</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div id="content-about" class="tab-content tab-hidden">
+                <div class="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden group">
+                    <!-- Decorative gradient overlay -->
+                    <div class="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-purple-500/5 to-transparent pointer-events-none"></div>
+                    
+                    <div class="relative z-10 grid md:grid-cols-2 gap-12 items-stretch">
+                        <!-- Left Column: Info -->
+                        <div class="flex flex-col justify-center">
+                            <h2 id="about-title" class="text-4xl sm:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
+                                O Mnie
+                            </h2>
+                            <p id="about-subtitle" class="text-lg text-purple-300 mb-6 font-medium">Pasja, Technologia, Kosmos</p>
+                            <p id="about-desc" class="text-gray-400 leading-relaxed mb-8 text-lg">
+                                Jestem studentem automatyki i robotyki z wielką pasją do technologii kosmicznych. W przyszłości chciałbym projektować systemy, które przekraczają granice ludzkich zdolności technicznych.
+                            </p>
+                            
+                            <!-- Stats Grid -->
+                            <div class="grid grid-cols-3 gap-4 border-t border-white/10 pt-8 mt-auto">
+                                <div class="text-center sm:text-left">
+                                    <div class="text-2xl font-bold text-white mb-1">10+</div>
+                                    <div id="stat-label-1" class="text-xs uppercase tracking-wider text-gray-500">Projekty</div>
+                                </div>
+                                <div class="text-center sm:text-left">
+                                    <div class="text-2xl font-bold text-white mb-1">3+ Lata</div>
+                                    <div id="stat-label-2" class="text-xs uppercase tracking-wider text-gray-500">Doświadczenia w popularyzacji</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Photo & Profile Panel -->
+                        <div class="bg-white/5 rounded-2xl p-8 border border-white/10 flex flex-col items-center text-center relative overflow-hidden shadow-inner">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-cyan-500 to-purple-500"></div>
+                            
+                            <!-- Profile Picture Container -->
+                            <div class="w-48 h-48 sm:w-56 sm:h-56 rounded-full p-1 bg-gradient-to-br from-white/20 to-white/0 mb-6 shadow-2xl relative group">
+                                <div class="w-full h-full rounded-full overflow-hidden border-4 border-[#0a0a12] relative z-10">
+                                    <!-- Zastąp to zdjęcie swoim -->
+                                    <img src="assets/profilowe.jpeg"
+                                        alt="Profile"
+                                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                </div>
+                                <!-- Glow effect behind image -->
+                                <div class="absolute inset-0 bg-purple-500/20 blur-xl rounded-full z-0 group-hover:bg-purple-500/40 transition-all duration-500"></div>
+                            </div>
+
+                            <h3 class="text-xl font-bold text-white mb-2">Antoni Zegarski</h3>
+                            
+                            <p id="about-placeholder" class="text-gray-400 text-sm leading-relaxed italic mb-8 max-w-sm">
+                                Student Robotyki i Automatyki na wydziale Mechaniki Energetyki i Lotnictwa Politechniki Warszawskiej. Działacz studenckiego koła astronautycznego, pasjonat technologii, astrofotografii i fizyki.
+                            </p>
+
+                            <!-- Social Links -->
+                            <div class="mt-auto grid grid-cols-4 gap-6">
+                                <a href="https://www.linkedin.com/in/antoni-zegarski-b19547301/" target="_blank" class="group flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors">
+                                    <div class="p-3 bg-white/5 rounded-xl group-hover:bg-[#0077b5] group-hover:text-white transition-all duration-300">
+                                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                                    </div>
+                                    <span class="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity absolute -bottom-5">LinkedIn</span>
+                                </a>
+                                <a href="https://www.instagram.com/antonizegarski/" target="_blank" class="group flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors">
+                                    <div class="p-3 bg-white/5 rounded-xl group-hover:bg-pink-600 group-hover:text-white transition-all duration-300">
+                                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                                    </div>
+                                    <span class="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity absolute -bottom-5">Instagram</span>
+                                </a>
+                                <a href="https://www.facebook.com/antek.zegarski/" target="_blank" class="group flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors">
+                                    <div class="p-3 bg-white/5 rounded-xl group-hover:bg-[#1877F2] group-hover:text-white transition-all duration-300">
+                                        <i data-lucide="facebook" class="w-5 h-5"></i>
+                                    </div>
+                                    <span class="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity absolute -bottom-5">Facebook</span>
+                                </a>
+                                <a href="https://www.strava.com/athletes/125335727" target="_blank" class="group flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors" title="Strava">
+                                    <div class="p-3 bg-white/5 rounded-xl group-hover:bg-[#fc4c02] group-hover:text-white transition-all duration-300">
+                                        <i data-lucide="activity" class="w-5 h-5"></i>
+                                    </div>
+                                    <span class="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity absolute -bottom-5">Strava</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- TAGS LINE (Moved to bottom) -->
+        <div class="mt-12 mb-4">
+            <div class="flex flex-wrap justify-center items-center gap-3">
+            <span id="tags-label" class="text-gray-500 text-xs uppercase tracking-widest mr-2">Umiejętności</span>
+            <span class="px-3 py-1 bg-white/5 border border-white/10 text-cyan-400/80 rounded-full text-xs font-mono hover:bg-cyan-500/10 hover:border-cyan-500/30 transition-all cursor-default">C++</span>
+            <span class="px-3 py-1 bg-white/5 border border-white/10 text-blue-400/80 rounded-full text-xs font-mono hover:bg-blue-500/10 hover:border-blue-500/30 transition-all cursor-default">Python</span>
+            <span class="px-3 py-1 bg-white/5 border border-white/10 text-purple-400/80 rounded-full text-xs font-mono hover:bg-purple-500/10 hover:border-purple-500/30 transition-all cursor-default">CAD</span>
+            <span class="px-3 py-1 bg-white/5 border border-white/10 text-yellow-400/80 rounded-full text-xs font-mono hover:bg-yellow-500/10 hover:border-yellow-500/30 transition-all cursor-default">Elektronika</span>
+            <span class="px-3 py-1 bg-white/5 border border-white/10 text-pink-400/80 rounded-full text-xs font-mono hover:bg-pink-500/10 hover:border-pink-500/30 transition-all cursor-default">Astronomia</span>
+            <span class="px-3 py-1 bg-white/5 border border-white/10 text-green-400/80 rounded-full text-xs font-mono hover:bg-green-500/10 hover:border-green-500/30 transition-all cursor-default">Druk 3D</span>
+            <span class="px-3 py-1 bg-white/5 border border-white/10 text-indigo-300/80 rounded-full text-xs font-mono hover:bg-indigo-500/10 hover:border-indigo-500/30 transition-all cursor-default">Astrofotografia</span>
+            <span class="px-3 py-1 bg-white/5 border border-white/10 text-red-400/80 rounded-full text-xs font-mono hover:bg-red-500/10 hover:border-red-500/30 transition-all cursor-default">PR</span>
+            <span class="px-3 py-1 bg-white/5 border border-white/10 text-orange-400/80 rounded-full text-xs font-mono hover:bg-orange-500/10 hover:border-orange-500/30 transition-all cursor-default">Analiza MES</span>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="py-6 text-center border-t border-white/5">
+            <p class="text-gray-500 text-sm">
+                © <span id="year">2026</span> Antoni Zegarski. <span id="footer-text">Projekt i realizacja</span>.
+            </p>
+        </footer>
+    </div>
+
+    <!-- Logic Script -->
+    <script>
+        // Update Icons on load
+        lucide.createIcons();
+        document.getElementById('year').textContent = new Date().getFullYear();
+        setupContactButton();
+
+        // State
+        let currentLang = 'pl';
+        let activeTab = 'collab';
+
+        // Translation Data
+        const translations = {
+            pl: {
+            role: "Inżynieria Kosmiczna & popularyzacja kosmosu",
+            nav: { about: "O mnie", collab: "Współpraca" },
+            tagsLabel: "Umiejętności",
+            about: {
+                title: "O Mnie",
+                subtitle: "Pasja, Technologia, Kosmos",
+                desc: "Jestem studentem automatyki i robotyki z wielką pasją do technologii kosmicznych. W przyszłości chciałbym projektować systemy, które przekraczają granice ludzkich zdolności technicznych.",
+                placeholder: "Student Robotyki i Automatyki na wydziale Mechaniki Energetyki i Lotnictwa Politechniki Warszawskiej. Działacz studenckiego koła astronautycznego, pasjonat technologii, astrofotografii i fizyki.",
+                stats: ["Projekty", "Doświadczenia w popularyzacji", "Technologie"],
+                exp: "3+ Lata",
+                tech: "Wiele"
+            },
+            collab: {
+                title: "Współpraca",
+                subtitle: "Budujmy razem przyszłość",
+                mainText: "Jestem otwarty na innowacyjne projekty inżynieryjne oraz inicjatywy edukacyjne. Posiadam zaplecze techniczne (drukarki 3D, elektronika) oraz doświadczenie w prowadzeniu warsztatów i prelekcji. Szukam partnerów biznesowych i naukowych do realizacji śmiałych wizji.",
+                workPhoto1Label: "Inżynieria",
+                workPhoto2Label: "Obserwacje",
+                workPhoto3Label: "Projektowanie CAD",
+                socialProof: "Profesjonalizm i pasja Antoniego sprawiły, że nasze wydarzenie astronomiczne przyciągnęło tłumy. Niesamowita wiedza przekazana w przystępny sposób.",
+                socialProofSourceName: "TechSpace Events",
+                socialProofSourceRole: "~ Jan Kowalski, CEO",
+                offerTitle: "Moja Oferta",
+                offer1Title: "Warsztaty Robotyczne",
+                offer1Desc: "Zajęcia praktyczne z budowy robotów i podstaw elektroniki dla szkół i firm.",
+                offer2Title: "Prelekcje Astronomiczne",
+                offer2Desc: "Fascynujące opowieści o kosmosie, misjach kosmicznych i fizyce.",
+                offer3Title: "Pokazy Nieba",
+                offer3Desc: "Profesjonalne obserwacje teleskopowe Słońca, Księżyca i planet.",
+                offer4Title: "Produkcja Video",
+                offer4Desc: "Realizacja materiałów filmowych i techniczne wsparcie planów zdjęciowych.",
+                offer5Title: "Szkolenia i Eventy",
+                offer5Desc: "Organizacja stref naukowych na eventach firmowych i obozach.",
+                contactStripCta: "Napisz do mnie"
+            },
+            footer: "Projekt i realizacja"
+            },
+            en: {
+                role: "Space Engineering & Space Popularization",
+                nav: { about: "About Me", collab: "Collaboration" },
+                tagsLabel: "Skill Stack",
+                about: {
+                    title: "About Me",
+                    subtitle: "Passion, Technology, Space",
+                    desc: "I am an automation and robotics student with a strong passion for space technologies. In the future, I would like to design systems that push the limits of human technical capabilities.",
+                    placeholder: "Automation and Robotics student at the Faculty of Power and Aeronautical Engineering of the Warsaw University of Technology. Active member of the student astronautics society, technology enthusiast, astrophotographer and physics fan.",
+                    stats: ["Projects", "Experience in outreach", "Technologies"],
+                    exp: "3+ Years",
+                    tech: "Many"
+                },
+                collab: {
+                    title: "Collaboration",
+                    subtitle: "Let's build the future together",
+                    mainText: "I am open to innovative engineering projects and educational initiatives. I have a technical workshop (3D printers, electronics) and experience in running workshops and talks. I am looking for business and research partners to bring bold ideas to life.",
+                    workPhoto1Label: "Engineering",
+                    workPhoto2Label: "Observations",
+                    workPhoto3Label: "CAD Design",
+                    socialProof: "Antoni's professionalism and passion made our astronomy event attract crowds. Incredible knowledge delivered in an accessible way.",
+                    socialProofSourceName: "TechSpace Events",
+                    socialProofSourceRole: "~ Jan Kowalski, CEO",
+                    offerTitle: "What I Offer",
+                    offer1Title: "Robotics Workshops",
+                    offer1Desc: "Hands-on classes on building robots and basic electronics for schools and companies.",
+                    offer2Title: "Astronomy Talks",
+                    offer2Desc: "Engaging stories about space, space missions and physics.",
+                    offer3Title: "Sky Shows",
+                    offer3Desc: "Professional telescope observations of the Sun, Moon and planets.",
+                    offer4Title: "Video Production",
+                    offer4Desc: "Production of video materials and technical support for film shoots.",
+                    offer5Title: "Trainings and Events",
+                    offer5Desc: "Organising science zones at corporate events and camps.",
+                    contactStripCta: "Email Me"
+                },
+                footer: "Design & Implementation"
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'pl' ? 'en' : 'pl';
+            const t = translations[currentLang];
+
+            // Update generic texts
+            document.getElementById('lang-label').textContent = currentLang === 'pl' ? 'EN' : 'PL';
+            document.getElementById('role-text').textContent = t.role;
+            document.getElementById('nav-about').textContent = t.nav.about;
+            document.getElementById('nav-collab').textContent = t.nav.collab;
+            document.getElementById('tags-label').textContent = t.tagsLabel;
+            
+            // About
+            document.getElementById('about-title').textContent = t.about.title;
+            document.getElementById('about-subtitle').textContent = t.about.subtitle;
+            document.getElementById('about-desc').textContent = t.about.desc;
+            document.getElementById('about-placeholder').textContent = t.about.placeholder;
+            
+            // Stats
+            document.getElementById('stat-label-1').textContent = t.about.stats[0];
+            document.getElementById('stat-label-2').textContent = t.about.stats[1];
+            document.getElementById('stat-label-3').textContent = t.about.stats[2];
+            // Update values if needed (hardcoded numbers in HTML, but strings like "3 Years" need change)
+            document.querySelector('#stat-label-2').previousElementSibling.textContent = t.about.exp;
+            document.querySelector('#stat-label-3').previousElementSibling.textContent = t.about.tech;
+
+            // Collab
+            document.getElementById('collab-title').textContent = t.collab.title;
+            document.getElementById('collab-main-text').textContent = t.collab.mainText;
+            document.getElementById('work-photo-1-label').textContent = t.collab.workPhoto1Label;
+            document.getElementById('work-photo-2-label').textContent = t.collab.workPhoto2Label;
+            document.getElementById('work-photo-3-label').textContent = t.collab.workPhoto3Label;
+            document.getElementById('social-proof-text').textContent = t.collab.socialProof;
+            document.getElementById('social-proof-source-name').textContent = t.collab.socialProofSourceName;
+            document.getElementById('social-proof-source-role').textContent = t.collab.socialProofSourceRole;
+            document.getElementById('offer-title').textContent = t.collab.offerTitle;
+            document.getElementById('offer-1-title').textContent = t.collab.offer1Title;
+            document.getElementById('offer-1-desc').textContent = t.collab.offer1Desc;
+            document.getElementById('offer-2-title').textContent = t.collab.offer2Title;
+            document.getElementById('offer-2-desc').textContent = t.collab.offer2Desc;
+            document.getElementById('offer-3-title').textContent = t.collab.offer3Title;
+            document.getElementById('offer-3-desc').textContent = t.collab.offer3Desc;
+            document.getElementById('offer-4-title').textContent = t.collab.offer4Title;
+            document.getElementById('offer-4-desc').textContent = t.collab.offer4Desc;
+            document.getElementById('offer-5-title').textContent = t.collab.offer5Title;
+            document.getElementById('offer-5-desc').textContent = t.collab.offer5Desc;
+            document.getElementById('contact-strip-cta').textContent = t.collab.contactStripCta;
+
+            // Footer
+            document.getElementById('footer-text').textContent = t.footer;
+        }
+
+        function setupContactButton() {
+            const emailSpan = document.getElementById('contact-email');
+            const labelSpan = document.getElementById('contact-strip-cta');
+            if (!emailSpan || !labelSpan) return;
+
+            const button = labelSpan.closest('button');
+            if (!button) return;
+
+            button.addEventListener('click', async () => {
+                const email = emailSpan.textContent.trim();
+
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(email);
+                    } else {
+                        const textarea = document.createElement('textarea');
+                        textarea.value = email;
+                        textarea.style.position = 'fixed';
+                        textarea.style.opacity = '0';
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                    }
+                } catch (e) {
+                    console.error('Clipboard copy failed', e);
+                }
+
+                button.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="copy" class="w-5 h-5"></i>
+                        <span id="contact-strip-cta">Copied!</span>
+                    </div>
+                `;
+                if (window.lucide && typeof lucide.createIcons === 'function') {
+                    lucide.createIcons();
+                }
+            }, { once: true });
+        }
+
+        function switchTab(tab) {
+            if (activeTab === tab) return;
+            activeTab = tab;
+
+            const tabAbout = document.getElementById('tab-about');
+            const tabCollab = document.getElementById('tab-collab');
+            
+            const contentAbout = document.getElementById('content-about');
+            const contentCollab = document.getElementById('content-collab');
+
+            // Style classes for active vs inactive buttons
+            const activeClasses = ['bg-gradient-to-r', 'from-purple-600', 'to-indigo-600', 'text-white', 'shadow-lg', 'shadow-purple-500/25', 'scale-105'];
+            const inactiveClasses = ['text-gray-400', 'hover:text-white', 'hover:bg-white/5'];
+            
+            // Collab active specific classes (blue/cyan theme)
+            const activeCollabClasses = ['bg-gradient-to-r', 'from-cyan-500', 'to-blue-600', 'text-white', 'shadow-lg', 'shadow-cyan-500/25', 'scale-105'];
+
+            if (tab === 'about') {
+                // Set About Button Active
+                tabAbout.classList.remove(...inactiveClasses);
+                tabAbout.classList.add(...activeClasses);
+                
+                // Set Collab Button Inactive
+                tabCollab.classList.remove(...activeCollabClasses);
+                tabCollab.classList.add(...inactiveClasses);
+
+                // Show About Content
+                contentAbout.classList.remove('tab-hidden');
+                contentAbout.classList.add('tab-visible');
+                
+                // Hide Collab Content
+                contentCollab.classList.remove('tab-visible');
+                contentCollab.classList.add('tab-hidden');
+
+            } else {
+                // Set About Button Inactive
+                tabAbout.classList.remove(...activeClasses);
+                tabAbout.classList.add(...inactiveClasses);
+                
+                // Set Collab Button Active
+                tabCollab.classList.remove(...inactiveClasses);
+                tabCollab.classList.add(...activeCollabClasses);
+
+                // Hide About Content
+                contentAbout.classList.remove('tab-visible');
+                contentAbout.classList.add('tab-hidden');
+                
+                // Show Collab Content
+                contentCollab.classList.remove('tab-hidden');
+                contentCollab.classList.add('tab-visible');
+            }
+        }
     </script>
 </body>
 </html>
