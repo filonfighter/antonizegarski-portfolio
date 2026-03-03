@@ -119,6 +119,16 @@
             border-color: rgba(255, 255, 255, 0.4);
         }
 
+        /* =====================================================
+         * SKILL COLOR CLASSES
+         * =====================================================
+         * To add a new skill color, copy an existing block and:
+         * 1. Change class name to .skill-{yourSkillId}
+         * 2. Change the color values (use same color for bg, text, border)
+         *    - background-color: rgba(R, G, B, 0.12)
+         *    - color: #hexcolor
+         *    - border-color: rgba(R, G, B, 0.5)
+         * ===================================================== */
         .skill-cpp {
             background-color: rgba(34, 211, 238, 0.12);
             color: #22d3ee;
@@ -228,6 +238,80 @@
                 transform: translateX(-50%);
             }
         }
+
+        /* Scrollable/Draggable skills container */
+        .skills-scroll-container {
+            overflow-x: auto;
+            overflow-y: hidden;
+            cursor: grab;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #333 transparent;
+        }
+        .skills-scroll-container:active {
+            cursor: grabbing;
+        }
+        .skills-scroll-container::-webkit-scrollbar {
+            height: 4px;
+        }
+        .skills-scroll-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .skills-scroll-container::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 2px;
+        }
+        .skills-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Clickable skill pills in filter */
+        .skill-pill-filter {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .skill-pill-filter:hover {
+            transform: scale(1.05);
+        }
+        .skill-pill-filter.inactive {
+            filter: grayscale(1);
+            opacity: 0.5;
+        }
+
+        /* Clickable About Me skills */
+        .skill-pill-clickable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .skill-pill-clickable:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 12px currentColor;
+        }
+
+        /* Project card filtering */
+        .project-card {
+            transition: opacity 0.3s ease, filter 0.3s ease;
+        }
+        .project-card.dimmed {
+            opacity: 0.3;
+            filter: grayscale(0.5);
+        }
+        .project-card .project-skill {
+            transition: all 0.3s ease;
+        }
+        .project-card .project-skill.inactive {
+            filter: grayscale(1);
+            opacity: 0.5;
+        }
+
+        /* Background grid for portfolio */
+        .bg-grid-default {
+            background-color: #050508;
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
     </style>
 </head>
 <body class="selection:bg-cyan-500 selection:text-black min-h-screen flex flex-col relative">
@@ -235,12 +319,15 @@
     <!-- --- BACKGROUND (Space Photo Placeholder) --- -->
     <div class="fixed inset-0 z-0 pointer-events-none bg-black">
         <!-- Lokalne tło z pliku tło.webp w katalogu projektu -->
-        <img src="assets/tło.webp" 
+        <img id="bg-image" src="assets/tło.webp" 
              alt="Space Background" 
-             class="absolute inset-0 w-full h-full object-cover opacity-70" />
+             class="absolute inset-0 w-full h-full object-cover opacity-70 transition-all duration-700" />
         
         <!-- Gradient overlay to fade bottom into black -->
         <div class="absolute inset-0 bg-gradient-to-t from-[#050508] via-[#050508]/30 to-transparent"></div>
+
+        <!-- Engineering Grid Overlay -->
+        <div id="bg-grid" class="absolute inset-0 opacity-0 transition-opacity duration-700 bg-grid-default"></div>
     </div>
 
     <!-- --- MAIN CONTENT CONTAINER --- -->
@@ -267,19 +354,27 @@
 
         <!-- NAVIGATION TABS -->
         <nav class="flex justify-center mb-12">
-            <div class="bg-white/5 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 inline-flex shadow-xl w-full max-w-xl">
+            <div class="bg-white/5 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 inline-flex shadow-xl w-full max-w-2xl">
                 <button
                     onclick="switchTab('collab')"
                     id="tab-collab"
-                    class="flex-1 justify-center px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25"
+                    class="flex-1 justify-center px-4 sm:px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25"
                 >
                     <i data-lucide="circuit-board" class="w-4 h-4"></i>
                     <span id="nav-collab">Współpraca</span>
                 </button>
                 <button
+                    onclick="switchTab('portfolio')"
+                    id="tab-portfolio"
+                    class="flex-1 justify-center px-4 sm:px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center space-x-2 text-gray-400 hover:text-white hover:bg-white/5"
+                >
+                    <i data-lucide="cpu" class="w-4 h-4"></i>
+                    <span id="nav-portfolio">Portfolio</span>
+                </button>
+                <button
                     onclick="switchTab('about')"
                     id="tab-about"
-                    class="flex-1 justify-center px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center space-x-2 text-gray-400 hover:text-white hover:bg-white/5"
+                    class="flex-1 justify-center px-4 sm:px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center space-x-2 text-gray-400 hover:text-white hover:bg-white/5"
                 >
                     <i data-lucide="user" class="w-4 h-4"></i>
                     <span id="nav-about">O mnie</span>
@@ -611,28 +706,202 @@
                         <div class="overflow-hidden py-1">
                             <div class="skills-marquee flex items-center gap-4 whitespace-nowrap">
                                 <span id="tags-label" class="text-gray-500 text-xs uppercase tracking-widest mr-4">Umiejętności</span>
-                                <span class="skill-pill skill-cpp px-3 py-1">C++</span>
-                                <span class="skill-pill skill-python px-3 py-1">Python</span>
-                                <span class="skill-pill skill-cad px-3 py-1">CAD</span>
-                                <span class="skill-pill skill-elektronika px-3 py-1">Elektronika</span>
-                                <span class="skill-pill skill-astronomia px-3 py-1">Astronomia</span>
-                                <span class="skill-pill skill-druk3d px-3 py-1">Druk 3D</span>
-                                <span class="skill-pill skill-astrofoto px-3 py-1">Astrofotografia</span>
-                                <span class="skill-pill skill-pr px-3 py-1">PR</span>
-                                <span class="skill-pill skill-mes px-3 py-1">Analiza MES</span>
+                                <span class="skill-pill skill-pill-clickable skill-cpp px-3 py-1" data-skill="cpp">C++</span>
+                                <span class="skill-pill skill-pill-clickable skill-python px-3 py-1" data-skill="python">Python</span>
+                                <span class="skill-pill skill-pill-clickable skill-cad px-3 py-1" data-skill="cad">CAD</span>
+                                <span class="skill-pill skill-pill-clickable skill-elektronika px-3 py-1" data-skill="elektronika">Elektronika</span>
+                                <span class="skill-pill skill-pill-clickable skill-astronomia px-3 py-1" data-skill="astronomia">Astronomia</span>
+                                <span class="skill-pill skill-pill-clickable skill-druk3d px-3 py-1" data-skill="druk3d">Druk 3D</span>
+                                <span class="skill-pill skill-pill-clickable skill-astrofoto px-3 py-1" data-skill="astrofoto">Astrofotografia</span>
+                                <span class="skill-pill skill-pill-clickable skill-pr px-3 py-1" data-skill="pr">Wystąpienia Publiczne</span>
+                                <span class="skill-pill skill-pill-clickable skill-mes px-3 py-1" data-skill="mes">Analiza MES</span>
                                 <!-- Duplicate for seamless loop -->
-                                <span class="skill-pill skill-cpp px-3 py-1">C++</span>
-                                <span class="skill-pill skill-python px-3 py-1">Python</span>
-                                <span class="skill-pill skill-cad px-3 py-1">CAD</span>
-                                <span class="skill-pill skill-elektronika px-3 py-1">Elektronika</span>
-                                <span class="skill-pill skill-astronomia px-3 py-1">Astronomia</span>
-                                <span class="skill-pill skill-druk3d px-3 py-1">Druk 3D</span>
-                                <span class="skill-pill skill-astrofoto px-3 py-1">Astrofotografia</span>
-                                <span class="skill-pill skill-pr px-3 py-1">PR</span>
-                                <span class="skill-pill skill-mes px-3 py-1">Analiza MES</span>
+                                <span class="skill-pill skill-pill-clickable skill-cpp px-3 py-1" data-skill="cpp">C++</span>
+                                <span class="skill-pill skill-pill-clickable skill-python px-3 py-1" data-skill="python">Python</span>
+                                <span class="skill-pill skill-pill-clickable skill-cad px-3 py-1" data-skill="cad">CAD</span>
+                                <span class="skill-pill skill-pill-clickable skill-elektronika px-3 py-1" data-skill="elektronika">Elektronika</span>
+                                <span class="skill-pill skill-pill-clickable skill-astronomia px-3 py-1" data-skill="astronomia">Astronomia</span>
+                                <span class="skill-pill skill-pill-clickable skill-druk3d px-3 py-1" data-skill="druk3d">Druk 3D</span>
+                                <span class="skill-pill skill-pill-clickable skill-astrofoto px-3 py-1" data-skill="astrofoto">Astrofotografia</span>
+                                <span class="skill-pill skill-pill-clickable skill-pr px-3 py-1" data-skill="pr">Wystąpienia Publiczne</span>
+                                <span class="skill-pill skill-pill-clickable skill-mes px-3 py-1" data-skill="mes">Analiza MES</span>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- ================= PORTFOLIO SECTION (NEW, RAW DESIGN) ================= -->
+            <div id="content-portfolio" class="tab-content tab-hidden">
+                <div class="bg-[#0a0a0c]/90 backdrop-blur-xl border border-gray-800/80 rounded-xl p-6 sm:p-12 shadow-2xl relative">
+                    
+                    <!-- Header -->
+                    <div class="mb-8 border-b border-gray-800 pb-6 flex items-center justify-between">
+                        <div>
+                            <h2 id="portfolio-title" class="text-3xl font-mono font-bold text-gray-200 tracking-tight">
+                                // ARCHIWUM_PROJEKTÓW
+                            </h2>
+                            <p id="portfolio-desc" class="text-gray-500 font-mono text-sm mt-2">Zestawienie wybranych realizacji inżynieryjnych i edukacyjnych.</p>
+                        </div>
+                        <i data-lucide="cpu" class="w-10 h-10 text-gray-600 opacity-50"></i>
+                    </div>
+
+                    <!-- Skills Filter Bar (Marquee) -->
+                    <div class="mb-10">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span id="portfolio-skills-label" class="text-gray-500 text-xs uppercase tracking-widest">Filtruj po umiejętnościach</span>
+                            <button id="clear-filter-btn" class="text-xs text-gray-500 hover:text-cyan-400 transition-colors hidden">(wyczyść)</button>
+                        </div>
+                        <div class="overflow-hidden py-2">
+                            <div id="portfolio-skills-marquee" class="skills-marquee flex items-center gap-4 whitespace-nowrap">
+                                <span class="skill-pill skill-pill-filter skill-cad px-3 py-1" data-skill="cad">CAD</span>
+                                <span class="skill-pill skill-pill-filter skill-mes px-3 py-1" data-skill="mes">Analiza MES</span>
+                                <span class="skill-pill skill-pill-filter skill-cpp px-3 py-1" data-skill="cpp">C++</span>
+                                <span class="skill-pill skill-pill-filter skill-druk3d px-3 py-1" data-skill="druk3d">Druk 3D</span>
+                                <span class="skill-pill skill-pill-filter skill-elektronika px-3 py-1" data-skill="elektronika">Elektronika</span>
+                                <span class="skill-pill skill-pill-filter skill-pr px-3 py-1" data-skill="pr">Wystąpienia Publiczne</span>
+                                <span class="skill-pill skill-pill-filter skill-astrofoto px-3 py-1" data-skill="astrofoto">Astrofotografia</span>
+                                <span class="skill-pill skill-pill-filter skill-astronomia px-3 py-1" data-skill="astronomia">Astronomia</span>
+                                <span class="skill-pill skill-pill-filter skill-python px-3 py-1" data-skill="python">Python</span>
+                                <!-- Duplicate for seamless loop -->
+                                <span class="skill-pill skill-pill-filter skill-cad px-3 py-1" data-skill="cad">CAD</span>
+                                <span class="skill-pill skill-pill-filter skill-mes px-3 py-1" data-skill="mes">Analiza MES</span>
+                                <span class="skill-pill skill-pill-filter skill-cpp px-3 py-1" data-skill="cpp">C++</span>
+                                <span class="skill-pill skill-pill-filter skill-druk3d px-3 py-1" data-skill="druk3d">Druk 3D</span>
+                                <span class="skill-pill skill-pill-filter skill-elektronika px-3 py-1" data-skill="elektronika">Elektronika</span>
+                                <span class="skill-pill skill-pill-filter skill-pr px-3 py-1" data-skill="pr">Wystąpienia Publiczne</span>
+                                <span class="skill-pill skill-pill-filter skill-astrofoto px-3 py-1" data-skill="astrofoto">Astrofotografia</span>
+                                <span class="skill-pill skill-pill-filter skill-astronomia px-3 py-1" data-skill="astronomia">Astronomia</span>
+                                <span class="skill-pill skill-pill-filter skill-python px-3 py-1" data-skill="python">Python</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-12">
+                        <!-- Category 1: Space Engineering -->
+                        <div>
+                            <h3 id="cat-1-title" class="text-lg font-mono font-semibold text-gray-300 mb-6 flex items-center gap-3">
+                                <span class="text-gray-600">[01]</span> Inżynieria
+                                <div class="flex-grow h-px bg-gray-800 ml-4"></div>
+                            </h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="project-card bg-black/50 border border-gray-800 p-6 rounded-lg hover:border-gray-600 transition-colors group" data-skills="cad,mes">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <h4 id="proj-1-title" class="font-bold text-gray-200">Systemy Mechanizmów Satelitarnych</h4>
+                                        <i data-lucide="cog" class="w-5 h-5 text-gray-500 group-hover:text-gray-300 transition-colors"></i>
+                                    </div>
+                                    <p id="proj-1-desc" class="text-gray-400 text-sm mb-6 leading-relaxed">
+                                        Projektowanie CAD w oparciu o analizę MES. Modelowanie mechanizmów rozkładania paneli słonecznych w warunkach mikrograwitacji dla misji studenckich (PW).
+                                    </p>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="project-skill skill-pill skill-cad px-3 py-1" data-skill="cad">CAD</span>
+                                        <span class="project-skill skill-pill skill-mes px-3 py-1" data-skill="mes">Analiza MES</span>
+                                    </div>
+                                </div>
+                                <!-- Collage 1 -->
+                                <div class="grid grid-cols-2 gap-2 h-full">
+                                    <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800">
+                                        <img src="assets/teleskop.webp" class="w-full h-full object-cover" alt="Project photo">
+                                    </div>
+                                    <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800">
+                                        <img src="assets/Quality1.webp" class="w-full h-full object-cover" alt="Project photo">
+                                    </div>
+                                    <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800">
+                                        <img src="assets/Quality2.webp" class="w-full h-full object-cover" alt="Project photo">
+                                    </div>
+                                    <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800">
+                                        <img src="assets/Quality3.webp" class="w-full h-full object-cover" alt="Project photo">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Category 2: Robotics & Electronics -->
+                        <div>
+                            <h3 id="cat-2-title" class="text-lg font-mono font-semibold text-gray-300 mb-6 flex items-center gap-3">
+                                <span class="text-gray-600">[02]</span> Elektronika & Programowanie
+                                <div class="flex-grow h-px bg-gray-800 ml-4"></div>
+                            </h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="project-card bg-black/50 border border-gray-800 p-6 rounded-lg hover:border-gray-600 transition-colors group" data-skills="cpp,druk3d,elektronika">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <h4 id="proj-2-title" class="font-bold text-gray-200">Autonomiczny Łazik Badawczy</h4>
+                                        <i data-lucide="cpu" class="w-5 h-5 text-gray-500 group-hover:text-gray-300 transition-colors"></i>
+                                    </div>
+                                    <p id="proj-2-desc" class="text-gray-400 text-sm mb-6 leading-relaxed">
+                                        Budowa i zaprogramowanie prototypu pojazdu kołowego. Wykonanie niestandardowych elementów przy użyciu drukarki Bambu Lab A1 mini oraz lutowanie obwodów sensorycznych.
+                                    </p>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="project-skill skill-pill skill-cpp px-3 py-1" data-skill="cpp">C++</span>
+                                        <span class="project-skill skill-pill skill-druk3d px-3 py-1" data-skill="druk3d">Druk 3D</span>
+                                        <span class="project-skill skill-pill skill-elektronika px-3 py-1" data-skill="elektronika">Elektronika</span>
+                                    </div>
+                                </div>
+                                <!-- Collage 2 -->
+                                <div class="grid grid-cols-2 gap-2 h-full">
+                                    <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800">
+                                        <img src="assets/pytanienasniadanie.webp" class="w-full h-full object-cover" alt="Project photo">
+                                    </div>
+                                    <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800">
+                                        <img src="assets/TrailsObóz.webp" class="w-full h-full object-cover" alt="Project photo">
+                                    </div>
+                                    <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800">
+                                        <img src="assets/Quality1.webp" class="w-full h-full object-cover" alt="Project photo">
+                                    </div>
+                                    <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800">
+                                        <img src="assets/teleskop.webp" class="w-full h-full object-cover" alt="Project photo">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Category 3: Outreach & Filmmaking -->
+                        <div>
+                            <h3 id="cat-3-title" class="text-lg font-mono font-semibold text-gray-300 mb-6 flex items-center gap-3">
+                                <span class="text-gray-600">[03]</span> Nauka
+                                <div class="flex-grow h-px bg-gray-800 ml-4"></div>
+                            </h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="project-card bg-black/50 border border-gray-800 p-6 rounded-lg hover:border-gray-600 transition-colors group" data-skills="pr,astrofoto">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <h4 id="proj-3-title" class="font-bold text-gray-200">Symulacja depozycji energii przez skupione cząstki w ciele wodnym</h4>
+                                        <i data-lucide="flask-conical" class="w-5 h-5 text-gray-500 group-hover:text-gray-300 transition-colors"></i>
+                                    </div>
+                                    <p id="proj-3-desc" class="text-gray-400 text-sm mb-6 leading-relaxed">
+                                        Zaprogramowanie i nadzór nad poprawnością fizyczną symulacji oddziaływania wysokoenergetycznych cząstek z materią. Zamodelowanie emitera oraz fantomu wodnego w środowisku Geant4, połączone z wizualizacją wyników i analizą głębokości penetracji promieniowania.
+                                    </p>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="project-skill skill-pill skill-pr px-3 py-1" data-skill="pr">Wystąpienia Publiczne</span>
+                                        <span class="project-skill skill-pill skill-astrofoto px-3 py-1" data-skill="astrofoto">Astrofotografia</span>
+                                    </div>
+                                </div>
+                                <!-- Collage 3 -->
+                                <div class="grid grid-cols-2 gap-2 h-full">
+                                    <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800">
+                                        <img src="assets/Quality3.webp" class="w-full h-full object-cover" alt="Project photo">
+                                    </div>
+                                    <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800">
+                                        <img src="assets/Quality2.webp" class="w-full h-full object-cover" alt="Project photo">
+                                    </div>
+                                    <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800">
+                                        <img src="assets/pytanienasniadanie.webp" class="w-full h-full object-cover" alt="Project photo">
+                                    </div>
+                                    <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800">
+                                        <img src="assets/TrailsObóz.webp" class="w-full h-full object-cover" alt="Project photo">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PDF Download Button -->
+                    <div class="mt-16 pt-8 border-t border-gray-800 flex justify-center">
+                        <a href="#" class="group relative px-8 py-4 bg-transparent border border-gray-600 text-gray-300 font-mono text-sm uppercase tracking-widest hover:bg-gray-800 hover:text-white transition-all duration-300 flex items-center gap-3">
+                            <i data-lucide="download" class="w-5 h-5 group-hover:translate-y-1 transition-transform"></i>
+                            <span id="portfolio-download">Pobierz pełne CV / Portfolio (PDF)</span>
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </main>
@@ -723,6 +992,33 @@
                 offerExtraText: "Jeśli masz własny pomysł na projekt, warsztat lub wydarzenie – napisz do mnie, a wspólnie dopasujemy formę współpracy do Twoich potrzeb.",
                 contactStripCta: "Napisz do mnie"
             },
+            portfolio: {
+                title: "// ARCHIWUM_PROJEKTÓW",
+                desc: "Zestawienie wybranych realizacji inżynieryjnych i edukacyjnych.",
+                skillsLabel: "Filtruj po umiejętnościach",
+                clearFilter: "(wyczyść)",
+                cat1Title: "Inżynieria Kosmiczna & CAD",
+                cat2Title: "Robotyka, Elektronika & Druk 3D",
+                cat3Title: "Edukacja Astronomiczna & Media",
+                proj1Title: "Systemy Mechanizmów Satelitarnych",
+                proj1Desc: "Projektowanie CAD w oparciu o analizę MES. Modelowanie mechanizmów rozkładania paneli słonecznych w warunkach mikrograwitacji dla misji studenckich (PW).",
+                proj2Title: "Autonomiczny Łazik Badawczy",
+                proj2Desc: "Budowa i zaprogramowanie prototypu pojazdu kołowego. Wykonanie niestandardowych elementów przy użyciu drukarki Bambu Lab A1 mini oraz lutowanie obwodów sensorycznych.",
+                proj3Title: "Warsztaty w Planetarium",
+                proj3Desc: "Ponad 3 lata doświadczenia w popularyzacji wiedzy. Prowadzenie prelekcji dla marek, organizacja obserwatoriów na obozach i tworzenie edukacyjnych materiałów video.",
+                downloadBtn: "Pobierz pełne CV / Portfolio (PDF)"
+            },
+            skills: {
+                cpp: "C++",
+                python: "Python",
+                cad: "CAD",
+                elektronika: "Elektronika",
+                astronomia: "Astronomia",
+                druk3d: "Druk 3D",
+                astrofoto: "Astrofotografia",
+                pr: "Wystąpienia Publiczne",
+                mes: "Analiza MES"
+            },
             footer: "Projekt i realizacja",
             footerHelp: "z pomocą Maji Karlickiej oraz Adama Malczenko"
             },
@@ -770,10 +1066,120 @@
                     offerExtraText: "If you have your own idea for a project, workshop or event, feel free to reach out and we will tailor the collaboration to your needs.",
                     contactStripCta: "Email Me"
                 },
+                portfolio: {
+                    title: "// PROJECT_ARCHIVE",
+                    desc: "A selection of engineering and educational projects.",
+                    skillsLabel: "Filter by skills",
+                    clearFilter: "(clear)",
+                    cat1Title: "Space Engineering & CAD",
+                    cat2Title: "Robotics, Electronics & 3D Printing",
+                    cat3Title: "Astronomy Education & Media",
+                    proj1Title: "Satellite Mechanism Systems",
+                    proj1Desc: "CAD design based on FEA analysis. Modelling solar panel deployment mechanisms in microgravity conditions for student missions (WUT).",
+                    proj2Title: "Autonomous Research Rover",
+                    proj2Desc: "Building and programming a wheeled vehicle prototype. Manufacturing custom parts using a Bambu Lab A1 mini printer and soldering sensor circuits.",
+                    proj3Title: "Planetarium Workshops",
+                    proj3Desc: "Over 3 years of experience in science outreach. Delivering talks for brands, organising observatory events at camps and creating educational video content.",
+                    downloadBtn: "Download Full CV / Portfolio (PDF)"
+                },
+                skills: {
+                    cpp: "C++",
+                    python: "Python",
+                    cad: "CAD",
+                    elektronika: "Electronics",
+                    astronomia: "Astronomy",
+                    druk3d: "3D Printing",
+                    astrofoto: "Astrophotography",
+                    pr: "Public Speaking",
+                    mes: "FEA Analysis"
+                },
                 footer: "Design & Implementation",
                 footerHelp: "with help of Maja Karlicka and Adam Malczenko"
             }
         };
+
+        /* =====================================================
+         * SKILLS CONFIGURATION
+         * =====================================================
+         * To add a new skill:
+         * 1. Add entry here with unique id and colorClass
+         * 2. Add CSS class .skill-{id} in <style> section (copy existing pattern)
+         * 3. Add translations in translations.pl.skills and translations.en.skills
+         * 
+         * colorClass uses Tailwind color format for consistency
+         * ===================================================== */
+        const SKILLS_CONFIG = {
+            cpp:         { colorClass: 'skill-cpp' },
+            python:      { colorClass: 'skill-python' },
+            cad:         { colorClass: 'skill-cad' },
+            elektronika: { colorClass: 'skill-elektronika' },
+            astronomia:  { colorClass: 'skill-astronomia' },
+            druk3d:      { colorClass: 'skill-druk3d' },
+            astrofoto:   { colorClass: 'skill-astrofoto' },
+            pr:          { colorClass: 'skill-pr' },
+            mes:         { colorClass: 'skill-mes' }
+        };
+
+        /* =====================================================
+         * PROJECTS CONFIGURATION
+         * =====================================================
+         * To add a new project:
+         * 1. Add entry here with unique id
+         * 2. Add translations in translations.pl.portfolio and translations.en.portfolio
+         *    using projN_Title and projN_Desc pattern
+         * 3. Specify skills array with skill ids from SKILLS_CONFIG
+         * 4. Optionally add images array for collage
+         * 
+         * categoryId links to cat-N-title elements (1, 2, or 3)
+         * ===================================================== */
+        const PROJECTS_CONFIG = [
+            {
+                id: 'proj-1',
+                categoryId: 1,
+                skills: ['cad', 'mes'],
+                icon: 'orbit',
+                titleKey: 'proj1Title',
+                descKey: 'proj1Desc'
+            },
+            {
+                id: 'proj-2',
+                categoryId: 2,
+                skills: ['cpp', 'druk3d', 'elektronika'],
+                icon: 'cpu',
+                titleKey: 'proj2Title',
+                descKey: 'proj2Desc'
+            },
+            {
+                id: 'proj-3',
+                categoryId: 3,
+                skills: ['pr', 'astrofoto'],
+                icon: 'users',
+                titleKey: 'proj3Title',
+                descKey: 'proj3Desc'
+            }
+        ];
+
+        /* Helper: Get all skill IDs as array */
+        function getAllSkillIds() {
+            return Object.keys(SKILLS_CONFIG);
+        }
+
+        /* Helper: Get skill name in current language */
+        function getSkillName(skillId) {
+            return translations[currentLang].skills[skillId] || skillId;
+        }
+
+        /* Helper: Get skill color class */
+        function getSkillColorClass(skillId) {
+            return SKILLS_CONFIG[skillId]?.colorClass || '';
+        }
+
+        /* Helper: Render a skill pill HTML */
+        function renderSkillPill(skillId, extraClasses = '') {
+            const colorClass = getSkillColorClass(skillId);
+            const name = getSkillName(skillId);
+            return `<span class="skill-pill ${colorClass} ${extraClasses} px-3 py-1" data-skill="${skillId}">${name}</span>`;
+        }
 
         function toggleLanguage() {
             currentLang = currentLang === 'pl' ? 'en' : 'pl';
@@ -848,6 +1254,32 @@
                 offerExtra.textContent = t.collab.offerExtraText;
             }
             document.getElementById('contact-strip-cta').textContent = t.collab.contactStripCta;
+
+            // Portfolio
+            document.getElementById('portfolio-title').textContent = t.portfolio.title;
+            document.getElementById('portfolio-desc').textContent = t.portfolio.desc;
+            document.getElementById('portfolio-skills-label').textContent = t.portfolio.skillsLabel;
+            const clearFilterBtn = document.getElementById('clear-filter-btn');
+            if (clearFilterBtn) clearFilterBtn.textContent = t.portfolio.clearFilter;
+            document.getElementById('cat-1-title').innerHTML = '<span class=\"text-gray-600\">[01]</span> ' + t.portfolio.cat1Title + '<div class=\"flex-grow h-px bg-gray-800 ml-4\"></div>';
+            document.getElementById('cat-2-title').innerHTML = '<span class=\"text-gray-600\">[02]</span> ' + t.portfolio.cat2Title + '<div class=\"flex-grow h-px bg-gray-800 ml-4\"></div>';
+            document.getElementById('cat-3-title').innerHTML = '<span class=\"text-gray-600\">[03]</span> ' + t.portfolio.cat3Title + '<div class=\"flex-grow h-px bg-gray-800 ml-4\"></div>';
+            document.getElementById('proj-1-title').textContent = t.portfolio.proj1Title;
+            document.getElementById('proj-1-desc').textContent = t.portfolio.proj1Desc;
+            document.getElementById('proj-2-title').textContent = t.portfolio.proj2Title;
+            document.getElementById('proj-2-desc').textContent = t.portfolio.proj2Desc;
+            document.getElementById('proj-3-title').textContent = t.portfolio.proj3Title;
+            document.getElementById('proj-3-desc').textContent = t.portfolio.proj3Desc;
+            document.getElementById('portfolio-download').textContent = t.portfolio.downloadBtn;
+
+            // Skills - update all skill pills by data-skill attribute
+            const allSkillPills = document.querySelectorAll('[data-skill]');
+            allSkillPills.forEach(pill => {
+                const skillKey = pill.dataset.skill;
+                if (t.skills && t.skills[skillKey]) {
+                    pill.textContent = t.skills[skillKey];
+                }
+            });
 
             // Footer
             document.getElementById('footer-text').textContent = t.footer;
@@ -1096,9 +1528,11 @@
 
             const tabAbout = document.getElementById('tab-about');
             const tabCollab = document.getElementById('tab-collab');
+            const tabPortfolio = document.getElementById('tab-portfolio');
             
             const contentAbout = document.getElementById('content-about');
             const contentCollab = document.getElementById('content-collab');
+            const contentPortfolio = document.getElementById('content-portfolio');
 
             // Style classes for active vs inactive buttons
             const activeClasses = ['bg-gradient-to-r', 'from-purple-600', 'to-indigo-600', 'text-white', 'shadow-lg', 'shadow-purple-500/25'];
@@ -1107,41 +1541,211 @@
             // Collab active specific classes (blue/cyan theme)
             const activeCollabClasses = ['bg-gradient-to-r', 'from-cyan-500', 'to-blue-600', 'text-white', 'shadow-lg', 'shadow-cyan-500/25'];
 
+            // Portfolio active specific classes (mono/gray theme)
+            const activePortfolioClasses = ['bg-gradient-to-r', 'from-gray-600', 'to-gray-800', 'text-white', 'shadow-lg', 'shadow-gray-500/25'];
+
+            // Reset all tabs
+            [tabAbout, tabCollab, tabPortfolio].forEach(t => {
+                if(t) {
+                    t.classList.remove(...activeClasses, ...activeCollabClasses, ...activePortfolioClasses);
+                    t.classList.add(...inactiveClasses);
+                }
+            });
+
+            // Hide all content
+            [contentAbout, contentCollab, contentPortfolio].forEach(c => {
+                if(c) {
+                    c.classList.remove('tab-visible');
+                    c.classList.add('tab-hidden');
+                }
+            });
+
+            // Background elements
+            const bgImage = document.getElementById('bg-image');
+            const bgGrid = document.getElementById('bg-grid');
+
             if (tab === 'about') {
-                // Set About Button Active
                 tabAbout.classList.remove(...inactiveClasses);
                 tabAbout.classList.add(...activeClasses);
-                
-                // Set Collab Button Inactive
-                tabCollab.classList.remove(...activeCollabClasses);
-                tabCollab.classList.add(...inactiveClasses);
-
-                // Show About Content
                 contentAbout.classList.remove('tab-hidden');
                 contentAbout.classList.add('tab-visible');
                 
-                // Hide Collab Content
-                contentCollab.classList.remove('tab-visible');
-                contentCollab.classList.add('tab-hidden');
-
-            } else {
-                // Set About Button Inactive
-                tabAbout.classList.remove(...activeClasses);
-                tabAbout.classList.add(...inactiveClasses);
-                
-                // Set Collab Button Active
+                if(bgImage) bgImage.classList.remove('grayscale', 'opacity-20', 'opacity-0');
+                if(bgGrid) bgGrid.classList.remove('opacity-100');
+            } else if (tab === 'collab') {
                 tabCollab.classList.remove(...inactiveClasses);
                 tabCollab.classList.add(...activeCollabClasses);
-
-                // Hide About Content
-                contentAbout.classList.remove('tab-visible');
-                contentAbout.classList.add('tab-hidden');
-                
-                // Show Collab Content
                 contentCollab.classList.remove('tab-hidden');
                 contentCollab.classList.add('tab-visible');
+
+                if(bgImage) bgImage.classList.remove('grayscale', 'opacity-20', 'opacity-0');
+                if(bgGrid) bgGrid.classList.remove('opacity-100');
+            } else if (tab === 'portfolio') {
+                tabPortfolio.classList.remove(...inactiveClasses);
+                tabPortfolio.classList.add(...activePortfolioClasses);
+                contentPortfolio.classList.remove('tab-hidden');
+                contentPortfolio.classList.add('tab-visible');
+
+                if(bgImage) bgImage.classList.add('grayscale', 'opacity-0');
+                if(bgGrid) bgGrid.classList.add('opacity-100');
             }
         }
+
+        // ========== SKILLS FILTER & DRAG SCROLL ==========
+        // Multiselect filter - stores Set of active skills
+        let activeSkillFilters = new Set();
+
+        function setupSkillsFilter() {
+            const filterPills = document.querySelectorAll('.skill-pill-filter');
+            const clearBtn = document.getElementById('clear-filter-btn');
+
+            filterPills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    const skill = pill.dataset.skill;
+                    toggleSkillFilter(skill);
+                });
+            });
+
+            // Clear button
+            if (clearBtn) {
+                clearBtn.addEventListener('click', clearSkillFilter);
+            }
+        }
+
+        function toggleSkillFilter(skill) {
+            // Toggle skill in/out of the active filters
+            if (activeSkillFilters.has(skill)) {
+                activeSkillFilters.delete(skill);
+            } else {
+                activeSkillFilters.add(skill);
+            }
+            applySkillFilters();
+        }
+
+        function applySkillFilter(skill) {
+            // For single skill selection (e.g., from About Me click) - clear and set one
+            activeSkillFilters.clear();
+            activeSkillFilters.add(skill);
+            applySkillFilters();
+        }
+
+        function applySkillFilters() {
+            const filterPills = document.querySelectorAll('.skill-pill-filter');
+            const clearBtn = document.getElementById('clear-filter-btn');
+            const projectCards = document.querySelectorAll('.project-card');
+
+            // If no filters active, clear all
+            if (activeSkillFilters.size === 0) {
+                clearSkillFilter();
+                return;
+            }
+            
+            // Update filter pills - make non-selected monochrome
+            filterPills.forEach(p => {
+                if (activeSkillFilters.has(p.dataset.skill)) {
+                    p.classList.remove('inactive');
+                } else {
+                    p.classList.add('inactive');
+                }
+            });
+            
+            // Show clear button
+            if (clearBtn) clearBtn.classList.remove('hidden');
+            
+            // Filter projects - show if ANY of the selected skills match
+            projectCards.forEach(card => {
+                const cardSkills = card.dataset.skills ? card.dataset.skills.split(',') : [];
+                const hasMatch = cardSkills.some(s => activeSkillFilters.has(s));
+                
+                if (hasMatch) {
+                    card.classList.remove('dimmed');
+                } else {
+                    card.classList.add('dimmed');
+                }
+                
+                // Make non-matching skill pills within project monochrome
+                const projectSkills = card.querySelectorAll('.project-skill');
+                projectSkills.forEach(ps => {
+                    if (activeSkillFilters.has(ps.dataset.skill)) {
+                        ps.classList.remove('inactive');
+                    } else {
+                        ps.classList.add('inactive');
+                    }
+                });
+            });
+        }
+
+        function setupAboutMeSkillsClick() {
+            const clickableSkills = document.querySelectorAll('.skill-pill-clickable');
+            
+            clickableSkills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    const skill = pill.dataset.skill;
+                    // Navigate to portfolio tab
+                    switchTab('portfolio');
+                    // Apply filter after a short delay for tab transition
+                    setTimeout(() => {
+                        applySkillFilter(skill);
+                    }, 100);
+                });
+            });
+        }
+
+        function clearSkillFilter() {
+            activeSkillFilters.clear();
+            const filterPills = document.querySelectorAll('.skill-pill-filter');
+            const clearBtn = document.getElementById('clear-filter-btn');
+            const projectCards = document.querySelectorAll('.project-card');
+            
+            filterPills.forEach(p => p.classList.remove('inactive'));
+            if (clearBtn) clearBtn.classList.add('hidden');
+            
+            projectCards.forEach(card => {
+                card.classList.remove('dimmed');
+                card.querySelectorAll('.project-skill').forEach(ps => {
+                    ps.classList.remove('inactive');
+                });
+            });
+        }
+
+        function setupDragScroll() {
+            const containers = document.querySelectorAll('.skills-scroll-container');
+            
+            containers.forEach(container => {
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+
+                container.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    container.style.cursor = 'grabbing';
+                    startX = e.pageX - container.offsetLeft;
+                    scrollLeft = container.scrollLeft;
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    container.style.cursor = 'grab';
+                });
+
+                container.addEventListener('mouseup', () => {
+                    isDown = false;
+                    container.style.cursor = 'grab';
+                });
+
+                container.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - container.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    container.scrollLeft = scrollLeft - walk;
+                });
+            });
+        }
+
+        // Initialize on load
+        setupSkillsFilter();
+        setupAboutMeSkillsClick();
     </script>
 </body>
 </html>
