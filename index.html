@@ -325,6 +325,10 @@
             animation: name-glow 1.2s ease-in-out 1;
         }
 
+        .about-subtitle-flicker {
+            animation: about-subtitle-flicker 2.6s ease-in-out infinite;
+        }
+
         @keyframes name-glow {
             0% {
                 text-shadow: 0 0 0 rgba(34, 211, 238, 0);
@@ -341,6 +345,41 @@
             100% {
                 text-shadow: 0 0 0 rgba(34, 211, 238, 0);
                 color: #ffffff;
+            }
+        }
+
+        @keyframes about-subtitle-flicker {
+            0% {
+                opacity: 1;
+                text-shadow: 0 0 0 rgba(168, 85, 247, 0);
+            }
+            12% {
+                opacity: 0.85;
+                text-shadow: 0 0 10px rgba(168, 85, 247, 0.35);
+            }
+            16% {
+                opacity: 1;
+                text-shadow: 0 0 16px rgba(168, 85, 247, 0.6);
+            }
+            24% {
+                opacity: 0.7;
+                text-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
+            }
+            28% {
+                opacity: 1;
+                text-shadow: 0 0 18px rgba(168, 85, 247, 0.7);
+            }
+            56% {
+                opacity: 0.88;
+                text-shadow: 0 0 12px rgba(168, 85, 247, 0.45);
+            }
+            62% {
+                opacity: 1;
+                text-shadow: 0 0 20px rgba(168, 85, 247, 0.8);
+            }
+            100% {
+                opacity: 1;
+                text-shadow: 0 0 0 rgba(168, 85, 247, 0);
             }
         }
 
@@ -724,7 +763,7 @@
                             <h2 id="about-title" class="text-4xl sm:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
                                 O Mnie
                             </h2>
-                            <p id="about-subtitle" class="text-lg text-purple-300 mb-6 font-medium">Pasja, Technologia, Kosmos</p>
+                            <p id="about-subtitle" class="text-lg text-purple-300 mb-6 font-medium about-subtitle-flicker">Pasja, Technologia, Kosmos</p>
                             <p id="about-desc" class="text-gray-400 leading-relaxed mb-8 text-lg">
                                 Jestem studentem Robotyki i Automatyki z wielką pasją do technologii kosmicznych. W przyszłości chciałbym projektować systemy, które przekraczają granice ludzkich zdolności technicznych.
                                 Obecnie także zajmuję się popularyzacją kosmosu dzieląc się swoją pasją z innymi. 
