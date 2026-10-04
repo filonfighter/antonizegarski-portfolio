@@ -472,8 +472,8 @@
 
     <!-- --- BACKGROUND (Space Photo Placeholder) --- -->
     <div class="fixed inset-0 z-0 pointer-events-none bg-black">
-        <!-- Lokalne tło z pliku tło.webp w katalogu projektu -->
-        <img id="bg-image" src="assets/tło.webp" 
+        <!-- Lokalne tło z pliku new_bckg.webp w katalogu projektu -->
+        <img id="bg-image" src="assets/new_bckg.webp" 
              alt="Space Background" 
              class="absolute inset-0 w-full h-full object-cover opacity-70 transition-[opacity,filter] duration-700" />
         
@@ -554,10 +554,18 @@
                             </h2>
                             <div class="bg-white/5 border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-colors duration-500 group">
                                 <p id="collab-main-text" class="text-gray-300 text-lg leading-relaxed group-hover:text-white transition-colors">
-                                    Od ponad 3 lat zajmuję się popularyzacją kosmosu, a dzięki nabywanej przez lata wiedzy oraz dzięki swojej szczerej pasji potrafię przenosić fascynację kosmosem także na innych. Dzięki moim umiejętnościom mogę
+                                    Od 4 lat zajmuję się popularyzacją kosmosu, a dzięki nabywanej przez lata wiedzy oraz dzięki swojej szczerej pasji potrafię przenosić fascynację kosmosem także na innych. Dzięki moim umiejętnościom mogę
                                     wznieść Twoje wydarzenie na wyższy poziom. 
                                 </p>
                             </div>
+                        </div>
+
+                        <!-- Contact button: navigates to About (contact details) -->
+                        <div class="flex justify-center">
+                            <button id="collab-contact-btn" onclick="switchTab('about')" class="group flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-105 transition-all duration-300 cursor-pointer">
+                                <i data-lucide="mail" class="w-5 h-5"></i>
+                                <span id="collab-contact-btn-label">Kontakt</span>
+                            </button>
                         </div>
 
                         <!-- Click hint above work photos -->
@@ -772,11 +780,12 @@
                             <!-- Stats Grid -->
                             <div class="grid grid-cols-3 gap-4 border-t border-white/10 pt-8 mt-auto">
                                 <div class="text-center sm:text-left">
-                                    <div class="text-2xl font-bold text-white mb-1">6+</div>
+                                    <div class="text-2xl font-bold text-white mb-1"><span id="stat-value-1">6</span><sup class="text-sm text-gray-400">*</sup></div>
+                                    <div id="stat-note-1" class="text-[10px] text-gray-500 mb-1">(*duże projekty)</div>
                                     <div id="stat-label-1" class="text-xs uppercase tracking-wider text-gray-500">Projekty</div>
                                 </div>
                                 <div class="text-center sm:text-left">
-                                    <div class="text-2xl font-bold text-white mb-1">3+ Lata</div>
+                                    <div class="text-2xl font-bold text-white mb-1"><span id="stat-value-2">4+ Lata</span></div>
                                     <div id="stat-label-2" class="text-xs uppercase tracking-wider text-gray-500">Doświadczenia w popularyzacji</div>
                                 </div>
                             </div>
@@ -808,25 +817,25 @@
                             <div class="mt-auto grid grid-cols-5 gap-6">
                                 <a href="https://www.linkedin.com/in/antoni-zegarski-b19547301/" target="_blank" class="group flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors">
                                     <div class="p-3 bg-white/5 rounded-xl group-hover:bg-[#0077b5] group-hover:text-white transition-all duration-300">
-                                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
                                     </div>
                                     <span class="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity absolute -bottom-5">LinkedIn</span>
                                 </a>
                                 <a href="https://www.instagram.com/antonizegarski/" target="_blank" class="group flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors">
                                     <div class="p-3 bg-white/5 rounded-xl group-hover:bg-pink-600 group-hover:text-white transition-all duration-300">
-                                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
                                     </div>
                                     <span class="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity absolute -bottom-5">Instagram</span>
                                 </a>
                                 <a href="https://www.facebook.com/antek.zegarski/" target="_blank" class="group flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors">
                                     <div class="p-3 bg-white/5 rounded-xl group-hover:bg-[#1877F2] group-hover:text-white transition-all duration-300">
-                                        <i data-lucide="facebook" class="w-5 h-5"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                                     </div>
                                     <span class="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity absolute -bottom-5">Facebook</span>
                                 </a>
                                 <a href="https://github.com/filonfighter" target="_blank" class="group flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors" title="GitHub">
                                     <div class="p-3 bg-white/5 rounded-xl group-hover:bg-[#0f172a] group-hover:text-white transition-all duration-300">
-                                        <i data-lucide="github" class="w-5 h-5"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
                                     </div>
                                     <span class="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity absolute -bottom-5">GitHub</span>
                                 </a>
@@ -1012,7 +1021,7 @@
                                 </div>
                             </div>
                             <!-- Project 6: Sounding Rocket Structural Analysis -->
-                            <div class="grid md:grid-cols-2 gap-6 mt-6">
+                            <div class="grid md:grid-cols-2 gap-6">
                                 <div class="project-card bg-black/50 border border-gray-800 p-6 rounded-lg hover:border-gray-600 transition-colors group" data-skills="nastran,mes,wytrzymalosc">
                                     <div class="flex justify-between items-start mb-4">
                                         <h4 id="proj-6-title" class="font-bold text-gray-200">Analiza Strukturalna Rakiety Twardowski-2</h4>
@@ -1052,14 +1061,11 @@
                                 <div class="flex-grow h-px bg-gray-800 ml-4"></div>
                             </h3>
                             <div class="grid md:grid-cols-2 gap-6">
-                                <!-- Project 5: Twardowski-2 Camera System (WIP, featured) -->
-                                <div class="project-card bg-black/50 border border-cyan-800/50 p-6 rounded-lg hover:border-cyan-600 transition-colors group relative" data-skills="stm,canbus,cots">
+                                <!-- Project 5: Twardowski-2 Camera System (completed) -->
+                                <div class="project-card bg-black/50 border border-gray-800 p-6 rounded-lg hover:border-gray-600 transition-colors group relative" data-skills="stm,canbus,cots">
                                     <div class="flex justify-between items-start mb-4">
                                         <h4 id="proj-5-title" class="font-bold text-gray-200">System Kamer Pokładowych Rakiety Twardowski-2</h4>
                                         <i data-lucide="camera" class="w-5 h-5 text-gray-500 group-hover:text-gray-300 transition-colors"></i>
-                                    </div>
-                                    <div class="flex flex-wrap gap-2 mb-4">
-                                        <span id="proj-5-wip" class="text-[0.6rem] font-mono uppercase tracking-widest text-cyan-500 bg-cyan-500/10 border border-cyan-500/30 px-3 py-1 rounded-full inline-flex items-center gap-1.5"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span></span>W trakcie realizacji</span>
                                     </div>
                                     <p id="proj-5-desc" class="text-gray-400 text-sm mb-6 leading-relaxed">
                                         Projektowanie i integracja infrastruktury kamer pokładowych dla rakiety Studenckiego Koła Astronautycznego (SKA) Twardowski-2. Główne zadanie obejmuje adaptację modułów wizyjnych typu COTS (Commercial Off-The-Shelf) oraz ich niskopoziomowe sprzężenie z mikrokontrolerem z rodziny STM. Obecnie rozwinięta płytka w wersji V1 przeszła swoje testy integracyjne oraz "prawie" lotne. Poprawki zostaną wprowadzone w następnej iteracji. 
@@ -1070,7 +1076,7 @@
                                         <span class="project-skill skill-pill skill-cots px-3 py-1" data-skill="cots">Integracja COTS</span>
                                     </div>
                                 </div>
-                                <!-- Camera project collage: 2/4 delivered photos -->
+                                <!-- Camera project collage: 4/4 delivered photos -->
                                 <div class="grid grid-cols-2 gap-2 h-full">
                                     <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800">
                                         <img src="assets/PCB3D.webp" class="w-full h-full object-cover" alt="Project photo" loading="lazy" decoding="async">
@@ -1248,7 +1254,8 @@
                 desc: "Jestem studentem Robotyki i Automatyki z wielką pasją do technologii kosmicznych. W przyszłości chciałbym projektować systemy, które przekraczają granice ludzkich zdolności technicznych. Obecnie także zajmuję się popularyzacją kosmosu dzieląc się swoją pasją z innymi.",
                 placeholder: "Student Robotyki i Automatyki na wydziale Mechaniki Energetyki i Lotnictwa Politechniki Warszawskiej. Działacz studenckiego koła astronautycznego, pasjonat technologii astrofotografii i fizyki. Biegacz.",
                 stats: ["Projekty", "Doświadczenia w popularyzacji", "Technologie"],
-                exp: "3+ Lata",
+                expUnit: "Lata",
+                projNote: "(*duże projekty)",
                 tech: "Wiele",
                 contactCta: "Napisz do mnie",
                 photoThanks: "dziękuję mojej ukochanej dziewczynie za to zdjęcie ❤️"
@@ -1257,7 +1264,7 @@
                 title: "Współpraca",
                 subtitle: "Budujmy razem przyszłość",
                 socialProofExtra: "Było to kameralne wydarzenie w Perfumerii Quality Missala, podczas którego opowiadałem o gwiazdozbiorach i nocnym niebie, łącząc świat zapachów z historiami z kosmosu.",
-                mainText: "Od ponad 3 lat zajmuję się popularyzacją kosmosu, a dzięki nabywanej przez lata wiedzy oraz dzięki swojej szczerej pasji potrafię przenosić fascynację kosmosem także na innych. Dzięki moim umiejętnościom mogę wznieść Twoje wydarzenie na wyższy poziom.",
+                mainText: "Od {years} lat zajmuję się popularyzacją kosmosu, a dzięki nabywanej przez lata wiedzy oraz dzięki swojej szczerej pasji potrafię przenosić fascynację kosmosem także na innych. Dzięki moim umiejętnościom mogę wznieść Twoje wydarzenie na wyższy poziom.",
                 workPhoto1Label: "Praca w planetarium",
                 workPhoto2Label: "Popularyzacja kosmosu",
                 workPhoto3Label: "Obserwacje i pokazy nieba",
@@ -1280,6 +1287,7 @@
                 clickHintPhotos: "Kliknij mnie",
                 clickHintOffers: "Kliknij mnie",
                 offerExtraText: "Jeśli masz własny pomysł na projekt, warsztat lub wydarzenie – napisz do mnie, a wspólnie dopasujemy formę współpracy do Twoich potrzeb.",
+                contactBtn: "Kontakt",
                 contactStripCta: "Napisz do mnie"
             },
             portfolio: {
@@ -1342,7 +1350,8 @@
                     desc: "I am an automation and robotics student with a strong passion for space technologies. In the future, I would like to design systems that push the limits of human technical capabilities. Currently, I am also involved in popularizing space by sharing my passion with others.",
                     placeholder: "Automation and Robotics student at the Faculty of Power and Aeronautical Engineering of the Warsaw University of Technology. Active member of the student astronautics society, technology enthusiast, astrophotographer and physics fan. Runner.",
                     stats: ["Projects", "Experience in outreach", "Technologies"],
-                    exp: "3+ Years",
+                    expUnit: "Years",
+                    projNote: "(*large projects)",
                     tech: "Many",
                     contactCta: "Email Me",
                     photoThanks: "I would like to thank my wonderful girlfriend for this photo ❤️"
@@ -1350,7 +1359,7 @@
                 collab: {
                     title: "Collaboration",
                     subtitle: "Let's build the future together",
-                    mainText: "For over 3 years I have been popularising space. Thanks to the knowledge I have gained over the years and my genuine passion, I can pass this fascination with the cosmos on to others. With my skills I can take your event to the next level.",
+                    mainText: "For {years} years I have been popularising space. Thanks to the knowledge I have gained over the years and my genuine passion, I can pass this fascination with the cosmos on to others. With my skills I can take your event to the next level.",
                     workPhoto1Label: "Planetarium work",
                     workPhoto2Label: "Space outreach",
                     workPhoto3Label: "Sky observations and shows",
@@ -1374,6 +1383,7 @@
                     clickHintPhotos: "Click me",
                     clickHintOffers: "Click me",
                     offerExtraText: "If you have your own idea for a project, workshop or event, feel free to reach out and we will tailor the collaboration to your needs.",
+                    contactBtn: "Contact",
                     contactStripCta: "Email Me"
                 },
                 portfolio: {
@@ -1476,14 +1486,6 @@
          * ===================================================== */
         const PROJECTS_CONFIG = [
             {
-                id: 'proj-7',
-                categoryId: 1,
-                skills: ['cad', 'kinematyka', 'gse'],
-                icon: 'fuel',
-                titleKey: 'proj7Title',
-                descKey: 'proj7Desc'
-            },
-            {
                 id: 'proj-5',
                 categoryId: 2,
                 skills: ['stm', 'canbus', 'cots'],
@@ -1547,9 +1549,40 @@
             return `<span class="skill-pill ${colorClass} ${extraClasses} px-3 py-1" data-skill="${skillId}">${name}</span>`;
         }
 
+        function getExperienceYears() {
+            const startYear = 2022;
+            return Math.max(0, new Date().getFullYear() - startYear);
+        }
+
+        function updateProjectCount() {
+            const valueEl = document.getElementById('stat-value-1');
+            if (valueEl) {
+                valueEl.textContent = document.querySelectorAll('.project-card').length;
+            }
+        }
+
+        function applyDynamicContent() {
+            const years = getExperienceYears();
+            const t = translations[currentLang];
+            const mainTextEl = document.getElementById('collab-main-text');
+            if (mainTextEl && t.collab.mainText) {
+                mainTextEl.textContent = t.collab.mainText.replace('{years}', years);
+            }
+            updateProjectCount();
+            const val2 = document.getElementById('stat-value-2');
+            if (val2 && t.about.expUnit) {
+                val2.textContent = `${years}+ ${t.about.expUnit}`;
+            }
+            const statNote1 = document.getElementById('stat-note-1');
+            if (statNote1 && t.about.projNote) {
+                statNote1.textContent = t.about.projNote;
+            }
+        }
+
         function toggleLanguage() {
             currentLang = currentLang === 'pl' ? 'en' : 'pl';
             const t = translations[currentLang];
+            const years = getExperienceYears();
 
             // Update generic texts
             document.getElementById('lang-label').textContent = currentLang === 'pl' ? 'EN' : 'PL';
@@ -1580,10 +1613,15 @@
             if (statLabel1) {
                 statLabel1.textContent = t.about.stats[0];
             }
+            const statNote1 = document.getElementById('stat-note-1');
+            if (statNote1 && t.about.projNote) {
+                statNote1.textContent = t.about.projNote;
+            }
+            updateProjectCount();
             if (statLabel2) {
                 statLabel2.textContent = t.about.stats[1];
-                const val2 = statLabel2.previousElementSibling;
-                if (val2) val2.textContent = t.about.exp;
+                const val2 = document.getElementById('stat-value-2');
+                if (val2) val2.textContent = `${years}+ ${t.about.expUnit}`;
             }
             if (statLabel3) {
                 statLabel3.textContent = t.about.stats[2];
@@ -1593,7 +1631,11 @@
 
             // Collab
             document.getElementById('collab-title').textContent = t.collab.title;
-            document.getElementById('collab-main-text').textContent = t.collab.mainText;
+            document.getElementById('collab-main-text').textContent = t.collab.mainText.replace('{years}', years);
+            const collabContactBtnLabel = document.getElementById('collab-contact-btn-label');
+            if (collabContactBtnLabel && t.collab.contactBtn) {
+                collabContactBtnLabel.textContent = t.collab.contactBtn;
+            }
             document.getElementById('work-photo-1-label').textContent = t.collab.workPhoto1Label;
             document.getElementById('work-photo-2-label').textContent = t.collab.workPhoto2Label;
             document.getElementById('work-photo-3-label').textContent = t.collab.workPhoto3Label;
@@ -1640,8 +1682,6 @@
             document.getElementById('proj-5-desc').textContent = t.portfolio.proj5Desc;
             document.getElementById('proj-6-title').textContent = t.portfolio.proj6Title;
             document.getElementById('proj-6-desc').textContent = t.portfolio.proj6Desc;
-            document.getElementById('proj-7-title').textContent = t.portfolio.proj7Title;
-            document.getElementById('proj-7-desc').textContent = t.portfolio.proj7Desc;
 
             // Skills - update all skill pills by data-skill attribute
             const allSkillPills = document.querySelectorAll('[data-skill]');
@@ -2165,6 +2205,7 @@
         setupSkillsFilter();
         setupAboutMeSkillsClick();
         setupMarqueeScroll();
+        applyDynamicContent();
     </script>
 </body>
 </html>
